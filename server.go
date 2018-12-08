@@ -33,7 +33,7 @@ func main() {
 	flag.StringVar(&Port, "port", "5000", "server listening port")
 	flag.Parse()
 
-	logger := log.New(os.Stdout, fmt.Sprintf("@localhost:%s ", Port), log.LstdFlags)
+	logger := log.New(os.Stdout, fmt.Sprintf("\n@LOCALHOST:%s ", Port), log.LstdFlags)
 
 	logger.Println("Simple go server")
 	logger.Println("Port:", Port)
