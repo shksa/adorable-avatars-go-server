@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -9,11 +10,13 @@ import (
 )
 
 func getRandomAvatar(w http.ResponseWriter, r *http.Request) {
+	log.Printf("request for %s", r.URL.Path)
 	avatar := adorable.Random()
 	w.Write(avatar)
 }
 
 func getRandomAvatarBasedOnUniqueUserID(w http.ResponseWriter, r *http.Request) {
+	log.Printf("request for %s", r.URL.Path)
 	qParam := r.URL.Query()
 	userID := qParam.Get("userID")
 	if len(userID) == 0 {
@@ -26,6 +29,7 @@ func getRandomAvatarBasedOnUniqueUserID(w http.ResponseWriter, r *http.Request) 
 }
 
 func greet(w http.ResponseWriter, r *http.Request) {
+	log.Printf("request for /")
 	fmt.Fprintf(w, "Hello World! %s", time.Now())
 }
 
@@ -33,5 +37,7 @@ func main() {
 	http.HandleFunc("/", greet)
 	http.HandleFunc("/getRandomAvatar", getRandomAvatar)
 	http.HandleFunc("/getRandomAvatarBasedOnUniqueUserID", getRandomAvatarBasedOnUniqueUserID)
+	log.SetPrefix("localhost:8080: ")
+	log.Printf("The server will listen on localhost:8080")
 	http.ListenAndServe(":8080", nil)
 }
