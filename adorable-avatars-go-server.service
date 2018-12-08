@@ -1,0 +1,23 @@
+[Unit]
+Description=adorable-avatars-go-server
+After=network.target
+
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=10
+
+WorkingDirectory=/home/sreekar339/adorable-avatars-go-server
+ExecStart=/home/sreekar339/adorable-avatars-go-server/adorable-avatars-go-server
+
+# make sure log directory exists and owned by syslog
+PermissionsStartOnly=true
+ExecStartPre=/bin/mkdir -p /var/log/adorable-avatars-go-server
+ExecStartPre=/bin/chown syslog:adm /var/log/adorable-avatars-go-server
+ExecStartPre=/bin/chmod 755 /var/log/adorable-avatars-go-server
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=adorable-avatars-go-server
+
+[Install]
+WantedBy=multi-user.target

@@ -25,17 +25,18 @@ var (
 	GitTag       string = ""
 	GitCommit    string = ""
 	GitTreeState string = ""
-	listenAddr   string
+	Port         string
 	healthy      int32
 )
 
 func main() {
-	flag.StringVar(&listenAddr, "listen-addr", ":5000", "server listen address")
+	flag.StringVar(&Port, "port", "5000", "server listening port")
 	flag.Parse()
 
-	logger := log.New(os.Stdout, "@localhost:5000: ", log.LstdFlags)
+	logger := log.New(os.Stdout, fmt.Sprintf("@localhost:%s ", Port), log.LstdFlags)
 
 	logger.Println("Simple go server")
+	logger.Println("Port:", Port)
 	logger.Println("Version:", Version)
 	logger.Println("GitTag:", GitTag)
 	logger.Println("GitCommit:", GitCommit)
@@ -54,7 +55,7 @@ func main() {
 	}
 
 	server := &http.Server{
-		Addr:         listenAddr,
+		Addr:         fmt.Sprintf("localhost:%s", Port),
 		Handler:      tracing(nextRequestID)(logging(logger)(router)),
 		ErrorLog:     logger,
 		ReadTimeout:  5 * time.Second,
@@ -81,10 +82,10 @@ func main() {
 		close(done)
 	}()
 
-	logger.Println("Server is ready to handle requests at", listenAddr)
+	logger.Println("Server is ready to handle requests at", Port)
 	atomic.StoreInt32(&healthy, 1)
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		logger.Fatalf("Could not listen on %s: %v\n", listenAddr, err)
+		logger.Fatalf("Could not listen on %s: %v\n", Port, err)
 	}
 
 	<-done
